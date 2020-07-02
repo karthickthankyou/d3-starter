@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react'
 import {
 	select,
 	line,
@@ -7,60 +7,60 @@ import {
 	scaleBand,
 	axisBottom,
 	axisRight,
-} from 'd3';
+} from 'd3'
 
 function Circles() {
-	const height = 200;
-	const width = 350;
-	const svgRef = useRef();
-	const [data, setData] = useState([22, 38, 12, 76, 100, 112]);
+	const height = 200
+	const width = 350
+	const svgRef = useRef()
+	const [data, setData] = useState([22, 38, 12, 76, 100, 112])
 
 	const increase = () => {
-		setData(data.map((d) => d + 5));
-	};
+		setData(data.map((d) => d + 5))
+	}
 
 	const filterCircle = () => {
-		setData(data.filter((d) => d > 50));
-	};
+		setData(data.filter((d) => d > 50))
+	}
 
 	const addData = () => {
-		const newData = [...data, Math.floor(Math.random() * 100)];
-		setData(newData);
-	};
+		const newData = [...data, Math.floor(Math.random() * 100)]
+		setData(newData)
+	}
 
 	useEffect(() => {
 		const svg = select(svgRef.current).attr(
 			'style',
 			`background: #eee; overflow:visible; display:block; margin: 20px; height:${height}; width: ${width}`
-		);
+		)
 
 		const xScale = scaleBand()
 			.domain(data.map((value, index) => index))
 			.range([0, width])
-			.padding(0.5);
+			.padding(0.5)
 
 		const yScale = scaleLinear()
 			.domain([0, Math.max(...data)])
-			.range([height, 0]);
+			.range([height, 0])
 
 		const colorScale = scaleLinear()
 			.domain([height, height / 2, height / 4])
 			.range(['red', 'orange', 'green'])
-			.clamp(true);
+			.clamp(true)
 
 		const xAxis = axisBottom(xScale)
 			.ticks(data.length)
-			.tickFormat((index) => index + 1);
+			.tickFormat((index) => index + 1)
 		svg
 			.select('.xAxis')
 			.style('transform', `translateY(${height}px)`)
-			.call(xAxis);
+			.call(xAxis)
 
-		const yAxis = axisRight(yScale);
+		const yAxis = axisRight(yScale)
 		svg
 			.select('.yAxis')
 			.style('transform', `translateX(${width}px)`)
-			.call(yAxis);
+			.call(yAxis)
 
 		svg
 			.selectAll('.bar')
@@ -69,7 +69,6 @@ function Circles() {
 			.attr('class', 'bar')
 			.attr('width', xScale.bandwidth())
 			.attr('x', (d, i) => xScale(i))
-			.attr('y', yScale)
 			.on('mouseenter', (value, index) => {
 				svg
 					.selectAll('.tooltip')
@@ -80,14 +79,16 @@ function Circles() {
 					.text(value)
 					.attr('text-anchor', 'middle')
 					.transition()
+					.attr('opacity', 1)
 					.attr('y', yScale(value) - 5)
-					.attr('opacity', 1);
 			})
 			.on('mouseleave', () => svg.select('.tooltip').remove())
 			.transition()
 			.attr('fill', colorScale)
-			.attr('height', (value) => height - yScale(value));
-	}, [data]);
+			.attr('height', (value) => height - yScale(value))
+
+			.attr('y', yScale)
+	}, [data])
 
 	return (
 		<>
@@ -99,7 +100,7 @@ function Circles() {
 			<button onClick={filterCircle}>Filter</button>
 			<button onClick={addData}>Add Data</button>
 		</>
-	);
+	)
 }
 
-export default Circles;
+export default Circles
